@@ -1,0 +1,8 @@
+{
+	"ClientName": "RayGun4Go Package",
+	"ClientVersion": "0.0.1",
+	"ClientUrl": "https://github.com/Marks-and-Spencer/raygun4go",
+	"RaygunAppName": "TestRestAPI",
+    "RaygunAPIKey": "0kEfeGBjx9tBRZfB/GPaow==",
+    "RaygunEndpoint": "https://api.raygun.io/entries"
+}
