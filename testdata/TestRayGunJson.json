@@ -1,0 +1,64 @@
+{
+    "occurredOn": "1970-12-31T23:50:59Z",
+    "details": {
+		"machineName": "",
+		"version": "",
+		"client": {
+			"name": "",
+			"version": "",
+			"clientUrl": ""
+		},
+		"error": {
+			"innerError": "",
+			"data": {},
+			"className": "",
+			"message": "",
+			"stackTrace": [
+			{
+				"lineNumber": 1,
+				"className": "",
+				"fileName": "",
+				"methodName": ""
+			}]
+		},
+		"environment": {
+			"processorCount": 1,
+			"osVersion": "" ,
+			"windowBoundsWidth": 1,
+			"windowBoundsHeight": 1,
+			"resolutionScale": "",
+			"currentOrientation": "",
+			"cpu": "",
+			"packageVersion": "",
+			"architecture": "",			
+			"totalPhysicalMemory": 1,
+			"availablePhysicalMemory": 1,
+			"totalVirtualMemory": 1,
+			"availableVirtualMemory": 1,
+			"diskSpaceFree": [],
+			"deviceName": "",
+			"locale": ""
+		},
+		"tags": [],
+		"userCustomData": {},
+		"request": {
+			"hostName": "",
+			"url": "",
+			"httpMethod": "",
+			"ipAddress": "",
+			"querystring": {},
+			"form": {},
+			"headers": {},
+			"rawData": {}
+		},
+		"response": {
+			"statusCode": 1
+		},
+		"user": {
+			"identifier": "greg.pugh@googlemail.com" 
+		},
+		"context": {
+			"identifier": "efb00767-f661-4344-9973-f1b902336ba1" 
+		}
+	}
+}

@@ -3,7 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-	Package goraygun is to be uesd as a recover from panic's and post to RayGun (http://raygun.io)
+	Package goraygun is to be uesd as a recover from panic's and post
+	to RayGun (http://raygun.io)
 	This is to be used only as a one level parent defer over possible panics.
 	There is the ability to use the RaygunRecovery() in multiple nested functions.
 */
@@ -53,8 +54,10 @@ func (g *Goraygun) LoadRaygunSettings() error {
 	return nil
 }
 
-//RaygunRecovery will handle any panic that may happen, Post to RayGun and then return caller function safely.
-//LoadRayGunSettings must have been successfuly called before using this function.
+//RaygunRecovery will handle any panic that may happen,
+//Post to RayGun and then return caller function safely.
+//LoadRayGunSettings must have been successfuly called
+//before using this function.
 // 		defer goraygun.RaygunRecovery()
 //
 // 		mimicPanic()

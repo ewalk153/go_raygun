@@ -1,7 +1,9 @@
 package goraygun
 
-//RayGunConfigFile holds all the config items about RayGunApp and the current app you are using this recovery package in.
-//There is an example config file in the repo 'RayGunConfig.json'. This needs to be on your local package folder to run.
+//RayGunConfigFile holds all the config items about RayGunApp and the current
+//app you are using this recovery package in.
+//There is an example config file in the repo 'RayGunConfig.json'.
+//This needs to be on your local package folder to run.
 type RayGunConfigFile struct {
 	RaygunAppName  string
 	RaygunAPIKey   string

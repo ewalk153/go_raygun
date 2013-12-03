@@ -1,0 +1,17 @@
+goroutine 1 [running]:
+main.recovery()
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:243 +0xa3
+main.otherMethod(0x4)
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:266 +0x2ca
+main.otherMethod(0x3)
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:270 +0x2b8
+main.otherMethod(0x2)
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:270 +0x2b8
+main.otherMethod(0x1)
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:270 +0x2b8
+main.otherMethod(0x0)
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:270 +0x2b8
+main.doStuffThenPanic()
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:256 +0xc9
+main.main()
+     /Users/gregpugh/Documents/Code/TestStuff/TestResfAPI/Server/go/src/mns/testfuncs/server.go:314 +0x155

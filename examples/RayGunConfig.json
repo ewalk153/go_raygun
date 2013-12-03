@@ -1,8 +1,8 @@
 {
-	"ClientName": "RayGun4Go Package",
+	"ClientName": "example Package name",
 	"ClientVersion": "0.0.1",
 	"ClientUrl": "https://github.com/DigitalInnovation/go_raygun/goraygun",
-	"RaygunAppName": "TestRestAPI",
-    "RaygunAPIKey": "sdrEathHEwSG4yu5hatH==",
+	"RaygunAppName": "raygun app name",
+    "RaygunAPIKey": "example API Key",
     "RaygunEndpoint": "https://api.raygun.io/entries"
 }

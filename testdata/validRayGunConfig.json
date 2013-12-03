@@ -1,0 +1,8 @@
+{
+	"ClientName": "ClientName",
+	"ClientVersion": "ClientVersion",
+	"ClientUrl": "ClientUrl",
+	"RaygunAppName": "RaygunAppName",
+    "RaygunAPIKey": "RaygunAPIKey",
+    "RaygunEndpoint": "RaygunEndpoint"
+}
