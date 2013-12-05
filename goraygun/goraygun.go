@@ -7,6 +7,7 @@
 	to RayGun (http://raygun.io)
 	This is to be used only as a one level parent defer over possible panics.
 	There is the ability to use the RaygunRecovery() in multiple nested functions.
+	A blog on how to use it can be found here http://mcpugh.com
 */
 package goraygun
 
