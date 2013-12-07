@@ -1,6 +1,7 @@
 package goraygun
 
 import (
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"testing"
@@ -132,4 +133,19 @@ func TestGetErrorDetials_hasExceptionAndline_noFilePath(t *testing.T) {
 	assert.Equal(t, 0, len(testErrorDetails.StackTrace), "There should not have been any stact traces returned.")
 	assert.Equal(t, errMsg, testErrorDetails.Message, "Expected %v, Recived %v", errMsg, testErrorDetails.Message)
 	assert.Empty(t, testErrorDetails.ClassName, "Class name should not have been set")
+}
+
+func TestGetErrorMessage_error(t *testing.T) {
+	errorText := "This is an error"
+	err := errors.New(errorText)
+	returnText := getErrorMessage(err)
+
+	assert.Equal(t, errorText, returnText, "Expected error message: %v", errorText)
+}
+
+func TestGetErrorMessage_string(t *testing.T) {
+	errorText := "This is a string"
+	returnText := getErrorMessage(errorText)
+
+	assert.Equal(t, errorText, returnText, "Expected error message: %v", errorText)
 }
