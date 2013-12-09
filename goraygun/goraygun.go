@@ -16,6 +16,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"reflect"
 	"runtime"
 	"strings"
 	"time"
@@ -66,19 +67,35 @@ func (g *Goraygun) LoadRaygunSettings() error {
 // 		log.Println("Have recovered and now can continue or fail")
 //
 func (g *Goraygun) RaygunRecovery() {
-	if r := recover(); r != nil {
+	if err := recover(); err != nil {
 
 		_, filePath, line, _ := runtime.Caller(4)
 
 		stack := make([]byte, 1<<16)
 		stack = stack[:runtime.Stack(stack, false)]
-		errorMsg := r.(error).Error()
+		errorMsg := getErrorMessage(err)
 
 		sendPanicRayGun(stack, errorMsg, filePath, line)
 
-		log.Println("Recovered from panic:", r)
+		log.Println("Recovered from panic:", err)
 
 	}
+}
+
+func getErrorMessage(err interface{}) string {
+
+	t := reflect.TypeOf(err).Kind()
+	// check if the type returned from recover is a string
+	if t == reflect.String {
+		return err.(string)
+	}
+	// check if the type returned from recover is an error
+	if t == reflect.TypeOf((*error)(nil)).Kind() {
+		return err.(error).Error()
+	}
+
+	return "TODO:Need to implement other types"
+
 }
 
 func sendPanicRayGun(exception []byte, errMsg string, filePath string, line int) {
