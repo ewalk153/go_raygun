@@ -5,7 +5,7 @@
 /*
 	Package goraygun is to be uesd as a recover from panic's and post
 	to RayGun (http://raygun.io)
-	This is to be used only as a one level parent defer over possible panics.
+	This can be used in a parent of multiple children, see example.
 	There is the ability to use the RaygunRecovery() in multiple nested functions.
 	A blog on how to use it can be found here http://mcpugh.com
 */
