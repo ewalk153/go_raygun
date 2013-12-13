@@ -1,23 +1,55 @@
 package main
 
 import (
-	"github.com/DigitalInnovation/go_raygun/goraygun"
+	// "errors"
 	"log"
+	"raygun/goraygun"
 )
 
 func mimicPanic() {
 
 	log.Println("In panicMethod")
 
+	method2()
+
+}
+
+func method2() {
+	log.Println("In method2")
+
+	method3()
+}
+
+func method3() {
+	log.Println("In method3")
+
+	method4()
+}
+
+func method4() {
+	log.Println("In method4")
+
+	method5()
+}
+
+func method5() {
+	log.Println("In method5")
+
+	method6()
+}
+
+func method6() {
+
+	log.Println("In method6")
+
 	var temp []int
 
 	_ = temp[1]
-
 }
 
 func main() {
 
-	log.Panicln("In testapp main")
+	//log.Panicln("In testapp main")
 
 	goraygun := new(goraygun.Goraygun)
 
