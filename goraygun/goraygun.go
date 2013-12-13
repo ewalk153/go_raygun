@@ -69,11 +69,12 @@ func (g *Goraygun) LoadRaygunSettings() error {
 func (g *Goraygun) RaygunRecovery() {
 	if err := recover(); err != nil {
 
-		_, filePath, line, _ := runtime.Caller(4)
+		//_, filePath, line, _ := runtime.Caller(4)
 
 		stack := make([]byte, 1<<16)
 		stack = stack[:runtime.Stack(stack, false)]
-		errorMsg := getErrorMessage(err)
+		//errorMsg := getErrorMessage(err)
+		errorMsg := err.(error).Error()
 
 		sendPanicRayGun(stack, errorMsg, filePath, line)
 

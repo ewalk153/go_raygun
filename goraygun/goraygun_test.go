@@ -26,9 +26,9 @@ func TestLoadRayGunSettings(t *testing.T) {
 	assert.Equal(t, rayGunConfig.RaygunEndpoint, "RaygunEndpoint", "Expected RaygunEndpoint, recoved %v", rayGunConfig.RaygunEndpoint)
 }
 
-func readByteException(t *testing.T) []byte {
+func readByteException(t *testing.T, exceptionFile string) []byte {
 
-	byteException := "../testdata/byteException"
+	byteException := exceptionFile
 
 	data, err := ioutil.ReadFile(byteException)
 	if err != nil {
@@ -38,101 +38,112 @@ func readByteException(t *testing.T) []byte {
 	return data
 }
 
-func TestProcessException(t *testing.T) {
+func TestGetPackageMethod_pass(t *testing.T) {
 
-	testExc := readByteException(t)
-	testLine := 266
+	exceptionLine := "main.method6()"
 
-	expectedPackageName := "main"
-	expectedFuncName := "otherMethod"
+	expectedPackage := "main"
+	expectedMethod := "method6()"
 
-	packageName, funcName := processException(testExc, testLine)
+	pack, method := getPackageMethod(exceptionLine)
 
-	assert.Equal(t, packageName, expectedPackageName, "Expected %v, Recived %v", expectedPackageName, packageName)
-	assert.Contains(t, funcName, expectedFuncName, "Expected %v, Recived %v", expectedFuncName, funcName)
+	assert.Equal(t, pack, expectedPackage, "Recieved %v, Expected %v", pack, expectedPackage)
+	assert.Equal(t, method, expectedMethod, "Recieved %v, Expected %v", method, expectedMethod)
+
 }
 
-func TestProcessException_noException(t *testing.T) {
+func TestGetPackageMethod_fail(t *testing.T) {
 
-	var testExc []byte
-	testLine := 222
+	exceptionLine := "mainmethod6()"
 
-	packageName, funcName := processException(testExc, testLine)
+	expectedPackage := ""
+	expectedMethod := ""
 
-	assert.Empty(t, packageName, "Package name should not have been returned")
-	assert.Empty(t, funcName, "func name should not have been returned")
+	pack, method := getPackageMethod(exceptionLine)
+
+	assert.Equal(t, pack, expectedPackage, "Recieved %v, Expected %v", pack, expectedPackage)
+	assert.Equal(t, method, expectedMethod, "Recieved %v, Expected %v", method, expectedMethod)
+
 }
 
-func TestProcessException_hasException_incorrectLineNum(t *testing.T) {
+func TestGetFileLineNumber_pass(t *testing.T) {
 
-	testExc := readByteException(t)
-	testLine := 222
+	exceptionLine := "/Users/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:47 +0xba"
 
-	packageName, funcName := processException(testExc, testLine)
+	expectedPath := "/Users/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:"
+	expectedLine := "47"
 
-	assert.Empty(t, packageName, "Package name should not have been returned")
-	assert.Empty(t, funcName, "func name should not have been returned")
+	path, line := getFileLineNumber(exceptionLine)
+
+	assert.Equal(t, path, expectedPath, "Recieved %v, Expected %v", path, expectedPath)
+	assert.Equal(t, line, expectedLine, "Recieved %v, Expected %v", line, expectedLine)
+}
+
+func TestGetFileLineNumber_fail(t *testing.T) {
+
+	exceptionLine := "/Users/Documents/Code/GoRayGun/Server/go/src/testapp/server:47 +0xba"
+
+	expectedPath := ""
+	expectedLine := ""
+
+	path, line := getFileLineNumber(exceptionLine)
+
+	assert.Equal(t, path, expectedPath, "Recieved %v, Expected %v", path, expectedPath)
+	assert.Equal(t, line, expectedLine, "Recieved %v, Expected %v", line, expectedLine)
+}
+
+func TestGetErrorStackTrace_pass(t *testing.T) {
+	testExc := readByteException(t, "../testdata/byteException2")
+
+	expectedCount := 7
+	firstFilepath := "        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:"
+	firstPackagename := "main"
+	firstMethod := "method6()"
+	firstLineNumber := 47
+
+	returnedStackTrace := getErrorStackTrace(testExc)
+
+	assert.True(t, len(returnedStackTrace) == expectedCount, "Returned stack trace count %v Expected %v", len(returnedStackTrace), expectedCount)
+	assert.Equal(t, returnedStackTrace[0].FileName, firstFilepath, "Returned %v, Expected %v", returnedStackTrace[0].FileName, firstFilepath)
+	assert.Equal(t, returnedStackTrace[0].LineNumber, firstLineNumber, "Returned %v, Expected %v", returnedStackTrace[0].LineNumber, firstLineNumber)
+	assert.Equal(t, returnedStackTrace[0].MethodName, firstMethod, "Returned %v, Expected %v", returnedStackTrace[0].MethodName, firstMethod)
+	assert.Equal(t, returnedStackTrace[0].ClassName, firstPackagename, "Returned %v, Expected %v", returnedStackTrace[0].ClassName, firstPackagename)
+}
+
+func TestGetErrorStackTrace_fail(t *testing.T) {
+	testExc := readByteException(t, "../testdata/byteException_fail")
+
+	expectedCount := 0
+
+	returnedStackTrace := getErrorStackTrace(testExc)
+
+	assert.True(t, len(returnedStackTrace) == expectedCount, "Returned stack trace count %v Expected %v", len(returnedStackTrace), expectedCount)
 }
 
 func TestGetErrorDetials(t *testing.T) {
 
-	testExc := readByteException(t)
+	testExc := readByteException(t, "../testdata/byteException")
 	errMsg := "errMsg"
-	testLine := 266
-	filePath := "filePath"
-	expectedClassName := "main"
+	//expectedClassName := "main"
 
-	testErrorDetails := getErrorDetails(errMsg, testExc, filePath, testLine)
+	testErrorDetails := getErrorDetails(errMsg, testExc)
 
 	assert.NotEmpty(t, testErrorDetails.Data, "Error Details Data stack trace should have been set")
 	assert.NotEmpty(t, testErrorDetails.StackTrace, "Error Details Stack trace should have been set")
-	assert.Equal(t, 1, len(testErrorDetails.StackTrace), "There should have been a stact traces returned.")
+	assert.True(t, len(testErrorDetails.StackTrace) > 1, "There should have been at least one stact trace returned.")
 	assert.Equal(t, errMsg, testErrorDetails.Message, "Expected %v, Recived %v", errMsg, testErrorDetails.Message)
-	assert.Equal(t, testErrorDetails.ClassName, expectedClassName, "Expected %v, Recived %v", expectedClassName, testErrorDetails.ClassName)
+	//assert.Equal(t, testErrorDetails.ClassName, expectedClassName, "Expected %v, Recived %v", expectedClassName, testErrorDetails.ClassName)
 }
 
 func TestGetErrorDetails_noException(t *testing.T) {
 
 	var testExc []byte
 	errMsg := "errMsg"
-	filePath := "filePath"
 
-	testErrorDetails := getErrorDetails(errMsg, testExc, filePath, 1)
+	testErrorDetails := getErrorDetails(errMsg, testExc)
 
 	assert.Empty(t, testErrorDetails.Data, "Error Detials Data stack trace should not have been set")
 	assert.Equal(t, errMsg, testErrorDetails.Message, "Expected %v, Recived %v", errMsg, testErrorDetails.Message)
-}
-
-func TestGetErrorDetails_hasException_noline(t *testing.T) {
-
-	testExc := readByteException(t)
-	errMsg := "errMsg"
-	filePath := "filePath"
-	var testLine int
-
-	testErrorDetails := getErrorDetails(errMsg, testExc, filePath, testLine)
-
-	assert.NotEmpty(t, testErrorDetails.Data, "Error Details Data stack trace should have been set")
-	assert.Empty(t, testErrorDetails.StackTrace, "Error Details Stack trace should be empty")
-	assert.Equal(t, 0, len(testErrorDetails.StackTrace), "There should not have been any stact traces returned.")
-	assert.Equal(t, errMsg, testErrorDetails.Message, "Expected %v, Recived %v", errMsg, testErrorDetails.Message)
-	assert.Empty(t, testErrorDetails.ClassName, "Class name should not have been set")
-}
-
-func TestGetErrorDetials_hasExceptionAndline_noFilePath(t *testing.T) {
-
-	testExc := readByteException(t)
-	errMsg := "errMsg"
-	testLine := 266
-	var filePath string
-
-	testErrorDetails := getErrorDetails(errMsg, testExc, filePath, testLine)
-
-	assert.NotEmpty(t, testErrorDetails.Data, "Error Details Data stack trace should have been set")
-	assert.Empty(t, testErrorDetails.StackTrace, "Error Details Stack trace should be empty")
-	assert.Equal(t, 0, len(testErrorDetails.StackTrace), "There should not have been any stact traces returned.")
-	assert.Equal(t, errMsg, testErrorDetails.Message, "Expected %v, Recived %v", errMsg, testErrorDetails.Message)
-	assert.Empty(t, testErrorDetails.ClassName, "Class name should not have been set")
 }
 
 func TestGetErrorMessage_error(t *testing.T) {

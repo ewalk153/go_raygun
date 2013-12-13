@@ -8,7 +8,7 @@ import (
 )
 
 //Entry point for creating RayGun JSON structure returning the detail struct.
-func getDetails(errMsg string, exception []byte, filePath string, line int) detail {
+func getDetails(errMsg string, exception []byte) detail {
 
 	var d detail
 
@@ -17,7 +17,7 @@ func getDetails(errMsg string, exception []byte, filePath string, line int) deta
 	d.MachineName = hostname
 	d.Version = rayGunConfig.ClientVersion
 	d.Client = getClientDetails()
-	d.Error = getErrorDetails(errMsg, exception, filePath, line)
+	d.Error = getErrorDetails(errMsg, exception)
 	//d.Request = getRequestDetials()
 	d.Context.Identifier = uuid()
 
@@ -35,68 +35,102 @@ func getClientDetails() clientDetails {
 	return c
 }
 
-func getErrorDetails(errMsg string, exception []byte, filePath string, line int) errorDetail {
+func getErrorDetails(errMsg string, exception []byte) errorDetail {
 
 	var e errorDetail
 
 	if exception != nil {
 		e.Data = string(exception)
-
-		if filePath != "" && line != 0 {
-			e.StackTrace = getErrorStackTrace(exception, filePath, line)
-		}
+		e.StackTrace = getErrorStackTrace(exception)
 	}
 
 	if len(e.StackTrace) > 0 {
 		e.ClassName = e.StackTrace[0].ClassName
 	}
-	// e.ClassName = "error class name"
 	e.Message = errMsg
 
 	return e
 }
 
-func getErrorStackTrace(exception []byte, filePath string, line int) []errorStackTrace {
+func getErrorStackTrace(exception []byte) []errorStackTrace {
 
-	var es errorStackTrace
-
-	packagekName, methodName := processException(exception, line)
-
-	es.ClassName = packagekName
-	es.MethodName = methodName
-
-	es.FileName = filePath
-	es.LineNumber = line
-
-	return []errorStackTrace{es}
-}
-
-func processException(exception []byte, line int) (string, string) {
+	var stackTraces []errorStackTrace
 
 	var stringExcep string
 	var splitstring []string
-	var panicLine int
-	var pkgAndMehtod []string
-	var pkgName string
-	var methodName string
 
 	if exception != nil {
 		stringExcep = string(exception)
 		splitstring = strings.Split(stringExcep, "\n")
 	}
 
-	if line != 0 && len(splitstring) != 0 {
-		for key, value := range splitstring {
-			if strings.Contains(value, strconv.Itoa(line)) {
-				panicLine = key
-				break
+	if len(splitstring) >= 5 {
+
+		count := 1
+
+		for i := 4; i < len(splitstring); i++ {
+
+			filepath, linenum := getFileLineNumber(splitstring[i])
+
+			packagename, methodname := getPackageMethod(splitstring[i-1])
+
+			if filepath != "" || linenum != "" || packagename != "" || methodname != "" {
+
+				var tempStack errorStackTrace
+
+				errorLineNum, err := strconv.Atoi(linenum)
+				if err == nil {
+					tempStack.LineNumber = errorLineNum
+				}
+				tempStack.FileName = filepath
+				tempStack.ClassName = packagename
+				tempStack.MethodName = methodname
+
+				tempStackTraces := make([]errorStackTrace, count)
+				copy(tempStackTraces, stackTraces)
+				tempStackTraces[count-1] = tempStack
+				stackTraces = make([]errorStackTrace, len(tempStackTraces))
+				copy(stackTraces, tempStackTraces)
+				count++
+			}
+
+			i++
+		}
+	}
+
+	return stackTraces
+}
+
+func getFileLineNumber(exLine string) (string, string) {
+
+	var filePath string
+	var lineNum string
+
+	if strings.Contains(exLine, ".go:") {
+
+		line := strings.SplitAfter(exLine, ".go:")
+
+		if len(line) > 1 {
+			filePath = line[0]
+			if strings.Contains(line[1], " ") {
+				linesplit := strings.Split(line[1], " ")
+				if len(linesplit) > 0 {
+					//return lineNum[0]
+					lineNum = linesplit[0]
+				}
 			}
 		}
 	}
 
-	if panicLine != 0 {
-		pkgAndMehtod = strings.Split(splitstring[panicLine-1], ".")
-	}
+	return filePath, lineNum
+}
+
+func getPackageMethod(exLine string) (string, string) {
+
+	var pkgName string
+	var methodName string
+
+	pkgAndMehtod := strings.Split(exLine, ".")
 
 	if len(pkgAndMehtod) >= 2 {
 		pkgName = pkgAndMehtod[0]

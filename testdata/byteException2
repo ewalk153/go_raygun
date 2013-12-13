@@ -1,0 +1,17 @@
+goroutine 1 [running]:
+raygun/goraygun.(*Goraygun).RaygunRecovery(0x473f20)
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/raygun/goraygun/goraygun.go:75 +0xa3
+main.method6()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:47 +0xba
+main.method5()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:38 +0xa2
+main.method4()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:32 +0xa2
+main.method3()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:26 +0xa2
+main.method2()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:20 +0xa2
+main.mimicPanic()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:13 +0xa2
+main.main()
+        /Users/gregpugh/Documents/Code/GoRayGun/Server/go/src/testapp/server.go:63 +0x100
