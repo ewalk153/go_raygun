@@ -73,8 +73,8 @@ func (g *Goraygun) RaygunRecovery() {
 
 		stack := make([]byte, 1<<16)
 		stack = stack[:runtime.Stack(stack, false)]
-		//errorMsg := getErrorMessage(err)
-		errorMsg := err.(error).Error()
+		errorMsg := getErrorMessage(err)
+		// errorMsg := err.(error).Error()
 
 		sendPanicRayGun(stack, errorMsg, filePath, line)
 

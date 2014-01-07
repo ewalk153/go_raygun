@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "errors"
 	"log"
 	"raygun/goraygun"
 )
@@ -48,8 +47,6 @@ func method6() {
 }
 
 func main() {
-
-	//log.Panicln("In testapp main")
 
 	goraygun := new(goraygun.Goraygun)
 
