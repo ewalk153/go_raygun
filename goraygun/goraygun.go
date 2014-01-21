@@ -74,9 +74,9 @@ func (g *Goraygun) RaygunRecovery() {
 		stack := make([]byte, 1<<16)
 		stack = stack[:runtime.Stack(stack, false)]
 		errorMsg := getErrorMessage(err)
-		// errorMsg := err.(error).Error()
+		//errorMsg := err.(error).Error()
 
-		sendPanicRayGun(stack, errorMsg, filePath, line)
+		sendPanicRayGun(stack, errorMsg)
 
 		log.Println("Recovered from panic:", err)
 
@@ -86,25 +86,29 @@ func (g *Goraygun) RaygunRecovery() {
 func getErrorMessage(err interface{}) string {
 
 	t := reflect.TypeOf(err).Kind()
-	// check if the type returned from recover is a string
-	if t == reflect.String {
-		return err.(string)
-	}
 	// check if the type returned from recover is an error
 	if t == reflect.TypeOf((*error)(nil)).Kind() {
 		return err.(error).Error()
 	}
+	// check if the type returned from recover is a string
+	if t == reflect.String {
+		return err.(string)
+	}
+	// check if the type returned from recover is a uintptr
+	if t == reflect.Uintptr {
+		return err.(error).Error()
+	}
 
-	return "TODO:Need to implement other types"
+	return "TODO:Need to implement other type: " + t.String()
 
 }
 
-func sendPanicRayGun(exception []byte, errMsg string, filePath string, line int) {
+func sendPanicRayGun(exception []byte, errMsg string) {
 
 	var rayError entrie
 
 	rayError.OccurredOn = time.Now().Format("2006-01-02T15:04:05Z")
-	rayError.Details = getDetails(errMsg, exception, filePath, line)
+	rayError.Details = getDetails(errMsg, exception)
 
 	raygunPost(rayError)
 

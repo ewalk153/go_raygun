@@ -59,6 +59,6 @@ func main() {
 
 	mimicPanic()
 
-	log.Println("Have recovered and now can continue or fail")
+	log.Println("This line will not get called if mimicPanic panics.")
 
 }
