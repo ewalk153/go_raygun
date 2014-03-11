@@ -66,8 +66,6 @@ func getErrorStackTrace(exception []byte) []errorStackTrace {
 
 	if len(splitstring) >= 5 {
 
-		count := 1
-
 		for i := 4; i < len(splitstring); i++ {
 
 			filepath, linenum := getFileLineNumber(splitstring[i])
@@ -86,12 +84,7 @@ func getErrorStackTrace(exception []byte) []errorStackTrace {
 				tempStack.ClassName = packagename
 				tempStack.MethodName = methodname
 
-				tempStackTraces := make([]errorStackTrace, count)
-				copy(tempStackTraces, stackTraces)
-				tempStackTraces[count-1] = tempStack
-				stackTraces = make([]errorStackTrace, len(tempStackTraces))
-				copy(stackTraces, tempStackTraces)
-				count++
+				stackTraces = append(stackTraces, tempStack)
 			}
 
 			i++
@@ -115,7 +108,6 @@ func getFileLineNumber(exLine string) (string, string) {
 			if strings.Contains(line[1], " ") {
 				linesplit := strings.Split(line[1], " ")
 				if len(linesplit) > 0 {
-					//return lineNum[0]
 					lineNum = linesplit[0]
 				}
 			}
