@@ -83,6 +83,13 @@ func (g *Goraygun) RaygunRecovery() {
 	}
 }
 
+func SendError(err error) {
+	stack := make([]byte, 1<<16)
+	stack = stack[:runtime.Stack(stack, false)]
+	errorMsg := getErrorMessage(err)
+	sendPanicRayGun(stack, errorMsg)
+}
+
 func getErrorMessage(err interface{}) string {
 
 	t := reflect.TypeOf(err).Kind()
