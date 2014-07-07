@@ -13,9 +13,11 @@ package goraygun
 
 import (
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"reflect"
 	"runtime"
 	"strings"
@@ -43,8 +45,17 @@ type Goraygun struct {
 //		}
 //
 func (g *Goraygun) LoadRaygunSettings() error {
+	file, err := os.Open(rayGunConfigFileName)
+	if err != nil {
+		return err
+	}
+	return g.LoadRaygunSettingsSource(file)
+}
 
-	data, err := ioutil.ReadFile(rayGunConfigFileName)
+//LoadRaygunSettingsSource sets up the enviroment details, pulling from a given io.Reader.
+//This needs to be called before using RaygunRecovery (alternative to LoadRaygunSettings)
+func (g *Goraygun) LoadRaygunSettingsSource(r io.Reader) error {
+	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return err
 	}
